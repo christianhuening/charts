@@ -1,0 +1,22 @@
+{{- if .Values.servicemonitor.create -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cert-manager
+  namespace: {{ .Release.Namespace }}
+  labels:
+    k8s-app: cert-manager
+    release: monitoring
+spec:
+  endpoints:
+  - port: "http"
+    path: /metrics
+    interval: 10s
+  selector:
+    matchLabels:
+      app: {{ template "cert-manager.name" . }}
+      release: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+    - cert-manager
+{{- end -}}
